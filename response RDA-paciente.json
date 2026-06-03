@@ -1,0 +1,824 @@
+{
+    "resourceType": "Bundle",
+    "type": "transaction-response",
+    "entry": [
+        {
+            "resource": {
+                "resourceType": "DocumentReference",
+                "id": "80f3e72d-de21-5ec0-ef49-84fc6369de62",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2026-05-20T09:34:04.505-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/DocumentReferenceRDA"
+                    ]
+                },
+                "status": "current",
+                "type": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "18842-5",
+                            "display": "Discharge summary"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "55108-5",
+                                "display": "Clinical presentation Document"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/1609ad97-d69d-391d-fccd-3fac2615d4bd"
+                },
+                "date": "2025-10-03T17:00:00-05:00",
+                "author": [
+                    {
+                        "reference": "Practitioner/6a2e21bb-0c34-0d9a-336d-23852618837f"
+                    }
+                ],
+                "custodian": {
+                    "reference": "Organization/MinSalud"
+                },
+                "description": "Documento FHIR del encuentro de atención en salud - RDA",
+                "securityLabel": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+                                "code": "R",
+                                "display": "restricted"
+                            }
+                        ]
+                    }
+                ],
+                "content": [
+                    {
+                        "attachment": {
+                            "url": "Composition/9226e58f-887d-47e5-ba59-1e1d5910c0a0"
+                        },
+                        "format": {
+                            "system": "http://ihe.net/fhir/ValueSet/IHE.FormatCode.codesystem",
+                            "code": "urn:ihe:iti:xds:2017:mimeTypeSufficient",
+                            "display": "mimeType Sufficient"
+                        }
+                    }
+                ]
+            },
+            "response": {
+                "status": "201",
+                "location": "https://sandbox.ihcecol.gov.co/ihce/DocumentReference/80f3e72d-de21-5ec0-ef49-84fc6369de62/_history/1",
+                "etag": "W/\"1\"",
+                "lastModified": "2026-05-20T09:34:04-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Composition",
+                "id": "9226e58f-887d-47e5-ba59-1e1d5910c0a0",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2026-05-20T09:34:04.534-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/CompositionPatientStatementRDA"
+                    ]
+                },
+                "status": "final",
+                "type": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "102089-0",
+                            "display": "FHIR resource patient medical record"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/1609ad97-d69d-391d-fccd-3fac2615d4bd"
+                },
+                "date": "2026-05-20T09:19:00-05:00",
+                "author": [
+                    {
+                        "reference": "Practitioner/6a2e21bb-0c34-0d9a-336d-23852618837f"
+                    }
+                ],
+                "title": "Resumen Digital de Atención en Salud - RDA de antecedentes manifestados por el paciente",
+                "confidentiality": "N",
+                "attester": [
+                    {
+                        "mode": "legal",
+                        "party": {
+                            "reference": "Organization/8e5f0325-05e3-ae22-a354-aed6709423ac"
+                        }
+                    }
+                ],
+                "custodian": {
+                    "reference": "Organization/8e5f0325-05e3-ae22-a354-aed6709423ac"
+                },
+                "event": [
+                    {
+                        "code": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianTechModality",
+                                        "code": "01",
+                                        "display": "Intramural"
+                                    }
+                                ]
+                            },
+                            {
+                                "coding": [
+                                    {
+                                        "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/GrupoServicios",
+                                        "code": "01",
+                                        "display": "Consulta externa"
+                                    }
+                                ]
+                            }
+                        ],
+                        "period": {
+                            "start": "2026-05-20T08:00:00-05:00",
+                            "end": "2026-05-20T09:00:00-05:00"
+                        }
+                    }
+                ],
+                "section": [
+                    {
+                        "title": "Historial de diagnósticos de problemas de salud",
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "11450-4",
+                                    "display": "Problem list - Reported"
+                                }
+                            ]
+                        },
+                        "entry": [
+                            {
+                                "reference": "Condition/8b221612-e92a-4b99-8bc8-4b8f92d4fb25"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Historial de alergias, intolerancias y reacciones adversas",
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "48765-2",
+                                    "display": "Allergies and adverse reactions Document"
+                                }
+                            ]
+                        },
+                        "entry": [
+                            {
+                                "reference": "AllergyIntolerance/3091a9b5-8cc4-4514-8d4d-708341f8266a"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Historial de medicamentos",
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "10160-0",
+                                    "display": "History of Medication use Narrative"
+                                }
+                            ]
+                        },
+                        "entry": [
+                            {
+                                "reference": "MedicationStatement/7d5a00a6-50de-416b-9119-6e1834a79c0a"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Historial de antecedentes familiares",
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "10157-6",
+                                    "display": "History of family member diseases Narrative"
+                                }
+                            ]
+                        },
+                        "entry": [
+                            {
+                                "reference": "FamilyMemberHistory/a0720e5e-e0ac-46d5-b584-549c4ae3409e"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "response": {
+                "status": "201",
+                "location": "https://sandbox.ihcecol.gov.co/ihce/Composition/9226e58f-887d-47e5-ba59-1e1d5910c0a0/_history/1",
+                "etag": "W/\"1\"",
+                "lastModified": "2026-05-20T09:34:04-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Patient",
+                "id": "1609ad97-d69d-391d-fccd-3fac2615d4bd",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2026-05-20T09:28:14.234-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/PatientRDA"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionPatientNationality",
+                        "valueCoding": {
+                            "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ISO31661",
+                            "code": "170",
+                            "display": "Colombia"
+                        }
+                    },
+                    {
+                        "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionPatientEthnicity",
+                        "valueCoding": {
+                            "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianEthnicGroup",
+                            "code": "6",
+                            "display": "Otras etnias"
+                        }
+                    },
+                    {
+                        "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionPatientDisability",
+                        "valueCoding": {
+                            "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianDisabilityClassification",
+                            "code": "08",
+                            "display": "Sin discapacidad"
+                        }
+                    },
+                    {
+                        "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionPatientGenderIdentity",
+                        "valueCoding": {
+                            "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianGenderIdentity",
+                            "code": "01",
+                            "display": "Masculino"
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "id": "NationalPersonIdentifier-0",
+                        "use": "official",
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PN",
+                                    "display": "Person number"
+                                },
+                                {
+                                    "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianPersonIdentifier",
+                                    "code": "CC",
+                                    "display": "Cédula ciudadanía"
+                                }
+                            ]
+                        },
+                        "system": "https://fhir.minsalud.gov.co/rda/NamingSystem/RNEC",
+                        "value": "1119836516"
+                    }
+                ],
+                "active": true,
+                "name": [
+                    {
+                        "use": "official",
+                        "family": "GONZALEZ LIÑAN",
+                        "_family": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionFathersFamilyName",
+                                    "valueString": "GONZALEZ"
+                                },
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionMothersFamilyName",
+                                    "valueString": "LIÑAN"
+                                }
+                            ]
+                        },
+                        "given": [
+                            "ANTONIO",
+                            "JOSE"
+                        ]
+                    }
+                ],
+                "gender": "male",
+                "_gender": {
+                    "extension": [
+                        {
+                            "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionBiologicalGender",
+                            "valueCoding": {
+                                "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianGenderGroup",
+                                "code": "01",
+                                "display": "Hombre"
+                            }
+                        }
+                    ]
+                },
+                "birthDate": "1987-04-12",
+                "_birthDate": {
+                    "extension": [
+                        {
+                            "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionBirthTime",
+                            "valueTime": "00:00:00"
+                        }
+                    ]
+                },
+                "deceasedBoolean": false,
+                "address": [
+                    {
+                        "id": "HomeAddress-0",
+                        "extension": [
+                            {
+                                "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionResidenceZone",
+                                "valueCoding": {
+                                    "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianResidenceZone",
+                                    "code": "01",
+                                    "display": "Urbana"
+                                }
+                            }
+                        ],
+                        "use": "home",
+                        "type": "physical",
+                        "city": "Bogotá D.C.",
+                        "_city": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionDivipolaMunicipality",
+                                    "valueCoding": {
+                                        "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/DIVIPOLA",
+                                        "code": "11001"
+                                    }
+                                }
+                            ]
+                        },
+                        "country": "Colombia",
+                        "_country": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionCountryCode",
+                                    "valueCoding": {
+                                        "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ISO31661",
+                                        "code": "170"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "response": {
+                "status": "200",
+                "etag": "W/\"1\"",
+                "lastModified": "2026-05-20T09:28:14-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Organization",
+                "id": "8e5f0325-05e3-ae22-a354-aed6709423ac",
+                "meta": {
+                    "versionId": "3",
+                    "lastUpdated": "2026-03-03T16:42:49.966-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/CareDeliveryOrganizationRDA"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "id": "TaxIdentifier-0",
+                        "use": "official",
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "TAX",
+                                    "display": "Tax ID number"
+                                },
+                                {
+                                    "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianOrganizationIdentifiers",
+                                    "code": "NIT",
+                                    "display": "Número de Identificación Tributaria"
+                                }
+                            ]
+                        },
+                        "value": "900917326"
+                    },
+                    {
+                        "id": "HealthcareProviderIdentifier-0",
+                        "use": "official",
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PRN",
+                                    "display": "Provider number"
+                                },
+                                {
+                                    "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianOrganizationIdentifiers",
+                                    "code": "CodigoPrestador",
+                                    "display": "Código de habilitación de prestador de servicios de salud"
+                                }
+                            ]
+                        },
+                        "system": "https://fhir.minsalud.gov.co/rda/NamingSystem/REPS",
+                        "value": "4400100988",
+                        "period": {
+                            "start": "2016-04-28"
+                        }
+                    }
+                ],
+                "active": true,
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianProviderClass",
+                                "code": "IPS",
+                                "display": "Institución Prestadora de Servicios de Salud"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianLegalNatureType",
+                                "code": "PRIV",
+                                "display": "Privada"
+                            }
+                        ]
+                    }
+                ],
+                "name": "IPS MEDIGROUP SAS",
+                "address": [
+                    {
+                        "use": "work",
+                        "type": "physical",
+                        "text": "Sin informacion",
+                        "city": "RIOHACHA",
+                        "_city": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionDivipolaMunicipality",
+                                    "valueCoding": {
+                                        "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/DIVIPOLA",
+                                        "code": "44001"
+                                    }
+                                }
+                            ]
+                        },
+                        "state": "LA GUAJIRA",
+                        "_state": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionDivipolaDepartment",
+                                    "valueCoding": {
+                                        "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/DIVIPOLA",
+                                        "code": "44"
+                                    }
+                                }
+                            ]
+                        },
+                        "country": "CO"
+                    }
+                ]
+            },
+            "response": {
+                "status": "200",
+                "etag": "W/\"3\"",
+                "lastModified": "2026-03-03T16:42:49-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Practitioner",
+                "id": "6a2e21bb-0c34-0d9a-336d-23852618837f",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-10-09T20:57:24.078-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/PractitionerRDA"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "id": "NationalPersonIdentifier-0",
+                        "use": "official",
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PN",
+                                    "display": "Person number"
+                                },
+                                {
+                                    "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ColombianPersonIdentifier",
+                                    "code": "CC",
+                                    "display": "Cédula ciudadanía"
+                                }
+                            ]
+                        },
+                        "value": "1118851951"
+                    }
+                ],
+                "active": true,
+                "name": [
+                    {
+                        "use": "official",
+                        "family": "DIAZ JULIO",
+                        "_family": {
+                            "extension": [
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionFathersFamilyName",
+                                    "valueString": "DIAZ"
+                                },
+                                {
+                                    "url": "https://fhir.minsalud.gov.co/rda/StructureDefinition/ExtensionMothersFamilyName",
+                                    "valueString": "JULIO"
+                                }
+                            ]
+                        },
+                        "given": [
+                            "ALEXA",
+                            "MARIA"
+                        ]
+                    }
+                ],
+                "qualification": [
+                    {
+                        "identifier": [
+                            {
+                                "use": "official",
+                                "type": {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                            "code": "LN",
+                                            "display": "License number"
+                                        }
+                                    ]
+                                },
+                                "system": "https://fhir.minsalud.gov.co/rda/NamingSystem/RETHUS",
+                                "value": "11603636",
+                                "assigner": {
+                                    "type": "Organization",
+                                    "display": "MinSalud"
+                                }
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/RETHUSqualification",
+                                    "code": "P07",
+                                    "display": "Medicina"
+                                }
+                            ]
+                        },
+                        "period": {
+                            "start": "2018-08-23"
+                        }
+                    }
+                ]
+            },
+            "response": {
+                "status": "200",
+                "etag": "W/\"2\"",
+                "lastModified": "2025-10-09T20:57:24-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Condition",
+                "id": "8b221612-e92a-4b99-8bc8-4b8f92d4fb25",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2026-05-20T09:34:04.604-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/ConditionStatementRDA"
+                    ]
+                },
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                            "code": "active",
+                            "display": "Active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "code": "unconfirmed",
+                            "display": "Unconfirmed"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                                "code": "encounter-diagnosis",
+                                "display": "Encounter Diagnosis"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "text": "Diabetes"
+                },
+                "subject": {
+                    "reference": "Patient/1609ad97-d69d-391d-fccd-3fac2615d4bd"
+                }
+            },
+            "response": {
+                "status": "201",
+                "location": "https://sandbox.ihcecol.gov.co/ihce/Condition/8b221612-e92a-4b99-8bc8-4b8f92d4fb25/_history/1",
+                "etag": "W/\"1\"",
+                "lastModified": "2026-05-20T09:34:04-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "AllergyIntolerance",
+                "id": "3091a9b5-8cc4-4514-8d4d-708341f8266a",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2026-05-20T09:34:04.627-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/AllergyIntoleranceStatementRDA"
+                    ]
+                },
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "code": "active",
+                            "display": "Active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "code": "unconfirmed",
+                            "display": "Unconfirmed"
+                        }
+                    ]
+                },
+                "code": {
+                    "coding": [
+                        {
+                            "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/TipoAlergia",
+                            "code": "01",
+                            "display": "Medicamento"
+                        }
+                    ],
+                    "text": "alergia a penicilina"
+                },
+                "patient": {
+                    "reference": "Patient/1609ad97-d69d-391d-fccd-3fac2615d4bd"
+                }
+            },
+            "response": {
+                "status": "201",
+                "location": "https://sandbox.ihcecol.gov.co/ihce/AllergyIntolerance/3091a9b5-8cc4-4514-8d4d-708341f8266a/_history/1",
+                "etag": "W/\"1\"",
+                "lastModified": "2026-05-20T09:34:04-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "FamilyMemberHistory",
+                "id": "a0720e5e-e0ac-46d5-b584-549c4ae3409e",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2026-05-20T09:34:04.672-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/FamilyMemberHistoryRDA"
+                    ]
+                },
+                "status": "partial",
+                "patient": {
+                    "reference": "Patient/1609ad97-d69d-391d-fccd-3fac2615d4bd"
+                },
+                "relationship": {
+                    "coding": [
+                        {
+                            "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/ParentescoAntecedente",
+                            "code": "01",
+                            "display": "Padres"
+                        }
+                    ]
+                },
+                "condition": [
+                    {
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/sid/icd-10",
+                                    "code": "Z034",
+                                    "display": "OBSERVACION POR SOSPECHA DE INFARTO DE MIOCARDIO"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "response": {
+                "status": "201",
+                "location": "https://sandbox.ihcecol.gov.co/ihce/FamilyMemberHistory/a0720e5e-e0ac-46d5-b584-549c4ae3409e/_history/1",
+                "etag": "W/\"1\"",
+                "lastModified": "2026-05-20T09:34:04-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "MedicationStatement",
+                "id": "7d5a00a6-50de-416b-9119-6e1834a79c0a",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2026-05-20T09:34:04.706-05:00",
+                    "profile": [
+                        "https://fhir.minsalud.gov.co/rda/StructureDefinition/MedicationStatementRDA"
+                    ]
+                },
+                "status": "completed",
+                "medicationCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "https://fhir.minsalud.gov.co/rda/CodeSystem/MipresINN",
+                            "code": "626",
+                            "display": "PARACETAMOL"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/1609ad97-d69d-391d-fccd-3fac2615d4bd"
+                }
+            },
+            "response": {
+                "status": "201",
+                "location": "https://sandbox.ihcecol.gov.co/ihce/MedicationStatement/7d5a00a6-50de-416b-9119-6e1834a79c0a/_history/1",
+                "etag": "W/\"1\"",
+                "lastModified": "2026-05-20T09:34:04-05:00"
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "OperationOutcome",
+                "id": "OperationOutcome-0",
+                "issue": [
+                    {
+                        "severity": "warning",
+                        "code": "invalid",
+                        "details": {
+                            "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/dotnet-api-operation-outcome",
+                                    "code": "MPI003"
+                                }
+                            ],
+                            "text": "El apellido en el recurso Patient.name._family.extension[1].ExtensionMothersFamilyName no coincide exactamente"
+                        },
+                        "expression": [
+                            "Patient.name._family"
+                        ]
+                    },
+                    {
+                        "severity": "warning",
+                        "code": "invalid",
+                        "details": {
+                            "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/dotnet-api-operation-outcome",
+                                    "code": "MPI003"
+                                }
+                            ],
+                            "text": "El apellido en el recurso Patient.name._family.extension[0].ExtensionFathersFamilyName no coincide exactamente, pero es similar al primer apellido referenciado"
+                        },
+                        "expression": [
+                            "Patient.name._family"
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
