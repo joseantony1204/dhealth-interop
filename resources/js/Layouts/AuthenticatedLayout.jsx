@@ -239,6 +239,23 @@ export default function AuthenticatedLayout({ user, header, children }) {
                                     <span>Nodo consulta externa</span>
                                 </Link>
 
+                                <Link 
+                                    href={route('ihce.consultas.index')} 
+                                    className={`flex items-center rounded-xl text-xs font-medium px-3 py-2.5 gap-3 transition-all whitespace-nowrap ${
+                                        route().current('ihce.consultas.index') 
+                                            ? 'bg-indigo-50/60 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400 font-bold shadow-[inset_0_0_0_1px_rgba(79,70,229,0.1)]' 
+                                            : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-slate-800/30'
+                                    }`}
+                                    onClick={() => setIsMobileOpen(false)}
+                                >
+                                    <div className="relative">
+                                        {/* Usamos el icono HiSearch o HiUsers importado arriba */}
+                                        <HiUsers className="w-4 h-4 shrink-0" /> 
+                                        <span className="absolute top-0 right-0 h-1.5 w-1.5 rounded-full bg-blue-500 ring-1 ring-white dark:ring-[#111827]"></span>
+                                    </div>
+                                    <span>Consultas MinSalud</span>
+                                </Link>
+
                                 <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase px-3 pt-4 mb-2 whitespace-nowrap">Configuraciones</p>
                                 
                                 <Link 

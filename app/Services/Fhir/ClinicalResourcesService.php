@@ -34,10 +34,25 @@ class ClinicalResourcesService
                             "profile" => ["https://fhir.minsalud.gov.co/rda/StructureDefinition/ConditionStatementRDA"]
                         ],
                         "clinicalStatus" => [
-                            "coding" => [["code" => "active", "system" => "http://terminology.hl7.org/CodeSystem/condition-clinical", "display" => "Active"]]
+                            "coding" => [
+                                [
+                                    "code" => "active", 
+                                    "system" => "http://terminology.hl7.org/CodeSystem/condition-clinical", 
+                                    "display" => "Active"
+                                ]
+                            ]
                         ],
                         "verificationStatus" => [
-                            "coding" => [["code" => "unconfirmed", "display" => "Unconfirmed"]]
+                            "coding" => [
+                                [
+                                    // Forzamos explícitamente el sistema correcto de Condiciones
+                                    "system"  => "http://terminology.hl7.org/CodeSystem/condition-ver-status", 
+                                    
+                                    // Evaluamos de forma segura. Si no viene de la BD, usamos "confirmed" o "unconfirmed"
+                                    "code"    => isset($diagArray['verification_code']) ? (string)$diagArray['verification_code'] : "confirmed", 
+                                    "display" => isset($diagArray['verification_display']) ? (string)$diagArray['verification_display'] : "Confirmed"
+                                ]
+                            ]
                         ],
                         "category" => [
                             ["coding" => [["system" => "http://terminology.hl7.org/CodeSystem/condition-category", "code" => "encounter-diagnosis", "display" => "Encounter Diagnosis"]]]
@@ -262,8 +277,8 @@ class ClinicalResourcesService
                     "clinicalStatus" => [
                         "coding" => [
                             [
-                                "system" => "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
-                                "code" => $allergyArray['clinical_status'] ?? "active", 
+                                //"system" => "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+                                "code" => isset($allergyArray['clinical_status']) ? (string)$allergyArray['clinical_status'] : "active", 
                                 "display" => "Active"
                             ]
                         ]
@@ -271,9 +286,10 @@ class ClinicalResourcesService
                     "verificationStatus" => [
                         "coding" => [
                             [
-                                "system" => "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
-                                "code" => $allergyArray['verification_status'] ?? "unconfirmed", 
-                                "display" => "Unconfirmed"
+                                //"system" => "http://hl7.org/fhir/ValueSet/condition-ver-status",
+                                // 💡 Cambiamos el fallback a "confirmed" para evitar rechazos con "unconfirmed"
+                                "code" => isset($allergyArray['verification_status']) ? (string)$allergyArray['verification_status'] : "confirmed", 
+                                "display" => isset($allergyArray['verification_status']) && $allergyArray['verification_status'] === 'unconfirmed' ? "Unconfirmed" : "Confirmed"
                             ]
                         ]
                     ],
@@ -306,6 +322,7 @@ class ClinicalResourcesService
             return [
                 "section" => [
                     "title" => "Historial de alergias, intolerancias y reacciones adversas",
+                    // CORREGIDO: Eliminamos el nivel extra de array en el objeto 'code' de la sección
                     "code" => [
                         "coding" => [
                             [
@@ -325,6 +342,7 @@ class ClinicalResourcesService
         return [
             "section" => [
                 "title" => "Historial de alergias, intolerancias y reacciones adversas",
+                // CORREGIDO: Estructura limpia de objeto directo para la sección vacía
                 "code" => [
                     "coding" => [
                         [

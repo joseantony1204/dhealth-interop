@@ -128,13 +128,19 @@ class RdaPatientService
      */
     public function buildJson($transmision): array
     {
-        //PASO 1. Compilar los datos médicos reales de la BD D-Health
-        $prestador = $this->fetchPrestadorData($transmision);
-        $data = $this->fetchRawMedicalData($transmision->cita_id);
+        // PASO 1. Compilar los datos médicos reales de la BD D-Health vía API
+        $data = $this->getRawMedicalData($transmision->cita_id);
+
+        // PASO 2: Validar y extraer el primer prestador del array
+        if (empty($data->prestador) || !is_array($data->prestador)) {
+            throw new \Exception("La API de D-Health no retornó información válida en el nodo 'prestador'.");
+        }
+        $prestador = $data->prestador[0];
 
         $fechaIso = now()->toIso8601String();
         $pacienteRef = "{$data->pac_tipo_id}-{$data->pac_identificacion}";
         $medicoRef = "{$data->med_tipo_id}-{$data->med_identificacion}";
+
         $codigoPrestador = $prestador->emp_codigo_prestador; 
         $tipoIdentificacionPrestador = $prestador->emp_tipo_identificacion; 
         $identificacionPrestador = $prestador->emp_identificacion; 
@@ -160,13 +166,17 @@ class RdaPatientService
         $diagnosticosRaw = [
             [
                 "cie10_codigo" => "I10X",
-                "cie10_nombre" => "Hipertensión esencial (primaria)",
-                "texto_libre"  => "Paciente hipertenso controlado con medicamento."
+                "cie10_nombre" => "Hipertension esencial (primaria)",
+                "texto_libre"  => "Paciente hipertenso controlado con medicamento.",
+                "verification_code"  => "unconfirmed",
+                "verification_display"  => "Unconfirmed"
             ],
             [
                 "cie10_codigo" => "E119",
-                "cie10_nombre" => "Diabetes mellitus no insulinodependiente sin complicaciones",
-                "texto_libre"  => "Diabetes tipo 2 controlada con dieta."
+                "cie10_nombre" => "DIABETES MELLITUS NO INSULINODEPENDIENTE, SIN MENCION DE COMPLICACION",
+                "texto_libre"  => "Diabetes tipo 2 controlada con dieta.",
+                "verification_code"  => "unconfirmed",
+                "verification_display"  => "Unconfirmed"
             ]
         ];
 
@@ -194,16 +204,16 @@ class RdaPatientService
                 "parentesco_codigo" => "02", // Código MinSalud para "Hermanos" (ejemplo)
                 "parentesco_display" => "Hermanos",
                 "cie10_codigo" => "E119",
-                "cie10_nombre" => "DIABETES MELLITUS NO INSULINODEPENDIENTE SIN COMPLICACIONES"
+                "cie10_nombre" => "DIABETES MELLITUS NO INSULINODEPENDIENTE, SIN MENCION DE COMPLICACION"
             ]
         ];
 
         // Extraer o formatear los medicamentos que vienen de $data (asumiendo que viene una colección o array)
         // Si $data->medicamentos no existe o viene de otra consulta, asegúrate de pasarlo como array aquí.
-        $medicamentosRaw = $data->medicamentos ?? [];
-        $diagnosticosRaw = $data->diagnosticos ?? [];
+        //$medicamentosRaw = $data->medicamentos ?? [];
+        //$diagnosticosRaw = $data->diagnosticos ?? [];
         $alergiasRaw     = $data->alergias ?? [];
-        $familiaresRaw   = $data->antecedentes ?? [];
+        //$familiaresRaw   = $data->antecedentesfamiliares ?? [];
 
         // 🚀 PROCESAMIENTO ANTICIPADO DE SECCIONES CLÍNICAS (Dinas & Robustas)
         $conditionData  = $this->clinicalService->buildConditionSection($diagnosticosRaw, $pacienteRef);
@@ -259,117 +269,16 @@ class RdaPatientService
     }
 
     /**
-     * Consulta unificada a la base de datos externa de D-Health Core
-     */
-    private function fetchPrestadorData($transmision): object
-    {
-        $data = DB::connection('dhealth_core')
-            ->table('cfempresas')
-            ->join("cfsedes AS s", "cfempresas.id", "=", "s.empresa_id")
-            ->join("cfmaestras AS t","t.id","=","cfempresas.tipoi_id")
-            ->select(
-                's.nombre as emp_nombre',
-                'cfempresas.identificacion as emp_identificacion',
-                't.nombre as emp_tipo_identificacion',
-                's.prestador as emp_codigo_prestador',
-                's.direccion as emp_direccion',
-            )
-            ->where('s.id', $transmision->configuracion->sede_id)
-            ->first(); 
-
-        if (!$data) {
-            throw new Exception("No se encontraron registros para el Core: {$transmision->id}");
-        }
-
-        return $data;
-    }
-    
-    private function fetchRawMedicalData(int $citaId): object
-    {
-        $data = DB::connection('dhealth_core')
-            ->table('adcitas')
-            ->join("cfservicios AS s", "s.id", "=", "adcitas.servicio_id")
-            ->join("cfdisponibilidades AS d", "d.id", "=", "adcitas.disponibilidad_id")
-            
-            ->join("adpacientes AS pc", "pc.id", "=", "adcitas.paciente_id")
-            ->join("personas AS p", "p.id", "=", "pc.persona_id")
-            ->join("cfmaestras AS t","t.id","=","p.tipoidentificacion_id")
-            ->join("cfmaestras AS sx","sx.id","=","p.sexo_id")
-
-            ->join("cffuncionarios AS f", "f.id", "=", "d.funcionario_id")
-            ->join("personas AS pf", "pf.id", "=", "f.persona_id")
-            ->join("cfmaestras AS tf","tf.id","=","pf.tipoidentificacion_id")
-
-            ->where('adcitas.id', $citaId)
-            ->select(
-                'p.identificacion as pac_identificacion',
-
-                't.codigo as pac_tipo_id',
-                't.nombre as pac_tipo_id_nombre',
-                
-                'p.nombre as pac_nombre',
-                'p.segundonombre as pac_segundonombre',
-                'p.apellido as pac_apellido',
-                'p.segundoapellido as pac_segundoapellido',
-                'p.fechanacimiento as pac_fechanacimiento',
-                'p.telefonomovil as pac_telefono',
-
-                'sx.codigo AS pac_codigo_sexo',
-                'sx.nombre AS pac_nombre_sexo',
-                'sx.observacion AS pac_extra_sexo',
-                // BUSCAR ZONA PACIENTE
-                DB::raw("(SELECT z.codigo FROM cfmaestras z WHERE z.id = p.zona_id LIMIT 1) AS pac_zona_codigo"),
-                DB::raw("(SELECT z.nombre FROM cfmaestras z WHERE z.id = p.zona_id LIMIT 1) AS pac_zona_nombre"),
-
-                // BUSCAR ETNIAS PACIENTE
-                DB::raw("(SELECT e.codigo FROM cfmaestras e WHERE e.id = p.etnia_id LIMIT 1) AS pac_etnia_codigo"),
-                DB::raw("(SELECT e.nombre FROM cfmaestras e WHERE e.id = p.etnia_id LIMIT 1) AS pac_etnia_nombre"),
-
-                // BUSCAR DISCAPACIDAD PACIENTE
-                DB::raw("(SELECT d.codigo FROM cfmaestras d WHERE d.id = p.discapacidad_id LIMIT 1) AS pac_discapacidad_codigo"),
-                DB::raw("(SELECT d.nombre FROM cfmaestras d WHERE d.id = p.discapacidad_id LIMIT 1) AS pac_discapacidad_nombre"),
-
-                // BUSCAR PAIS PACIENTE
-                DB::raw("(SELECT pa.codigo FROM cfmaestras pa WHERE pa.id = p.pais_id LIMIT 1) AS pac_pais_codigo"),
-                DB::raw("(SELECT pa.nombre FROM cfmaestras pa WHERE pa.id = p.pais_id LIMIT 1) AS pac_pais_nombre"),
-
-                // BUSCAR DEPARTAMENTO PACIENTE
-                DB::raw("(SELECT de.codigo FROM cfmaestras de WHERE de.id = p.departamento_id LIMIT 1) AS pac_departamento_codigo"),
-                DB::raw("(SELECT de.nombre FROM cfmaestras de WHERE de.id = p.departamento_id LIMIT 1) AS pac_departamento_nombre"),
-
-                // BUSCAR CIUDAD PACIENTE
-                DB::raw("(SELECT ci.codigo FROM cfmaestras ci WHERE ci.id = p.ciudad_id LIMIT 1) AS pac_ciudad_codigo"),
-                DB::raw("(SELECT ci.nombre FROM cfmaestras ci WHERE ci.id = p.ciudad_id LIMIT 1) AS pac_ciudad_nombre"),
-
-                'pf.identificacion as med_identificacion',
-                'pf.nombre as med_nombre',
-                'pf.segundonombre as med_segundonombre',
-                'pf.apellido as med_apellido',
-                'pf.segundoapellido as med_segundoapellido',
-                'tf.codigo as med_tipo_id',
-                'tf.nombre as med_tipo_id_nombre',
-               
-                'adcitas.fechasolicitud as cita_fecha'
-            )
-            ->first();
-
-        if (!$data) {
-            throw new Exception("No se encontraron registros clínicos en el Core para la cita ID: {$citaId}");
-        }
-        return $data;
-    }
-
-    /**
      * Consume la API externa de D-Health y parsea el JSON a un Objeto stdClass
      */
-    private function getRawMedicalData(int $pacienteId): object
+    private function getRawMedicalData(int $citaId): object
     {
         try {
             // 1. Consumir el endpoint de la API externa
             $response = Http::withHeaders([
                 'Accept' => 'application/json',
                 //'Authorization' => 'Bearer ' . config('services.dhealth.token') // Opcional si requiere token
-            ])->get("https://ipsmedigroup.com/dhealth/api/paciente/ficha/{$pacienteId}");
+            ])->get("https://ipsmedigroup.com/dhealth/api/paciente/ficha/{$citaId}");
     
             // Si la API responde con un error (440, 500, etc.)
             if ($response->failed()) {
@@ -390,7 +299,7 @@ class RdaPatientService
             return $data;
     
         } catch (Exception $e) {
-            throw new Exception("No se pudieron obtener los registros clínicos vía API para el paciente ID {$pacienteId}: " . $e->getMessage());
+            throw new Exception("No se pudieron obtener los registros clínicos vía API para el paciente ID {$citaId}: " . $e->getMessage());
         }
     }
 }

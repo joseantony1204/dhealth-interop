@@ -291,7 +291,7 @@ class RdaConsultaService
                                                               //espera un array de medicamentos.
    
         $prescripcionesRaw  = $data->prescripciones ?? [];    //Puede venir de $data o ser un array vacío si no se pasa
-        $documentosRaw      = $data->documentos ?? [];        //Se puede aceptar vacio puesto que el metodo genera uno por defecto
+        //$documentosRaw      = $data->documentos ?? [];        //Se puede aceptar vacio puesto que el metodo genera uno por defecto
                                                               // Base64 correspondiente a: "Sin documentos adjuntos para esta atencion."
                                                               //$base64NoAplica = "U2luIGRvY3VtZW50b3MgYWRqdW50b3MgcGFyYSBlc3RhIGF0ZW5jaW9uLg==";
 

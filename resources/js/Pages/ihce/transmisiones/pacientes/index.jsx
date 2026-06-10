@@ -81,7 +81,7 @@ export default function Rdapaciente({ auth, transmisiones, filters, configuracio
 
     // 🔄 Transmisión inmediata con feedback interactivo de SweetAlert2
     const handleRowTransmission = async (transmisionId, citaId) => {
-        setLoadingRows(prev => ({ ...prev, [citaId]: true }));
+        setLoadingRows(prev => ({ ...prev, [transmisionId]: true }));
         try {
             const response = await axios.post(route('ihce.connector.transmision.immediate'), {
                 transmision_id: transmisionId,
@@ -119,7 +119,7 @@ export default function Rdapaciente({ auth, transmisiones, filters, configuracio
                 customClass: { popup: 'rounded-2xl border border-slate-200 dark:border-slate-800' }
             });
         } finally {
-            setLoadingRows(prev => ({ ...prev, [citaId]: false }));
+            setLoadingRows(prev => ({ ...prev, [transmisionId]: false }));
         }
     };
 
@@ -524,7 +524,7 @@ export default function Rdapaciente({ auth, transmisiones, filters, configuracio
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs">
                             {transmisionesFiltradas.map((tx) => {      
-                                const isRowLoading = !!loadingRows[tx.cita_id];
+                                const isRowLoading = !!loadingRows[tx.id];
                                 const paciente = getPatientFromSnapshot(tx.source_snapshot_data);
 
                                 return (
