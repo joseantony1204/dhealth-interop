@@ -66,40 +66,53 @@ class IhcegatewayController extends Controller
      */
     public function encolarTransmision(Request $request)
     {
-        $validated = $request->validate(
-            [
-                'cita_id'          => ['required', 'integer'],
-                'typerda'          => ['required', 'string', 'in:RDA_PATIENT,RDA_CONSULTA'],
-                'configuracion_id' => ['required', 'integer', 'exists:ihce_configuraciones,id'],
-            ],
-            [
-                'cita_id.required' => 'Debe enviar el id de la cita.',
-                'typerda.required' => 'Debe enviar el tipo de RDA.',
-                'typerda.in' => 'El tipo de RDA no es válido.',
-                'configuracion_id.required' => 'Debe enviar la configuración.',
-                'configuracion_id.exists' => 'La configuración indicada no existe.',
-            ]
-        );
-
-        $existe = Ihcetransmisiones::query()
-            ->where('cita_id', $validated['cita_id'])
-            ->where('configuracion_id', $validated['configuracion_id'])
-            ->where('typerda', $validated['typerda'])
-            ->where('estado', 'APPROVED')
-            ->exists();
-
-        if ($existe) {
-            return response()->json([
-                'message' => "La cita #{$validated['cita_id']} ya cuenta con una homologación APPROVED ante MinSalud."
-            ], 409);
-        }
-
+        // 1. Validación (Si falla, Axios lo capturará en el bloque 422 automáticamente)
+        $validated = $request->validate([
+            'cita_id' => ['required', 'integer'],
+            'typerda' => ['required', 'string', 'in:RDA_PATIENT,RDA_CONSULTA'],
+            'mode'    => ['required', 'string', 'in:UAT,PRO'],
+        ], [
+            'cita_id.required' => 'Debe enviar el id de la cita.',
+            'typerda.required' => 'Debe enviar el tipo de RDA.',
+            'typerda.in'       => 'El tipo de RDA no es válido.',
+            'mode.required'    => 'Debe enviar el modo - UAT: ambiente prueba / PRO: Entorno producción.',
+        ]);
+        
         try {
-            $transmision = DB::transaction(function () use ($validated) {
+            // 2. Buscar configuración de ambiente
+            $config = Ihceconfiguraciones::where('id', 1)
+                ->whereHas('ambiente', function ($q) use ($validated) {
+                    $q->where('codigo', $validated['mode']);
+                })
+                ->first();
 
+            if (!$config) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "No se encontró una configuración activa para el modo: {$validated['mode']}."
+                ], 404);
+            }
+
+            // 3. Verificar si ya está aprobado
+            $existe = Ihcetransmisiones::query()
+                ->where('cita_id', $validated['cita_id'])
+                ->where('configuracion_id', $config->id)
+                ->where('typerda', $validated['typerda'])
+                ->where('estado', 'APPROVED')
+                ->exists();
+
+            if ($existe) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "La cita #{$validated['cita_id']} ya cuenta con una homologación APPROVED ante MinSalud."
+                ], 409); // El código 409 es perfecto aquí
+            }
+
+            // 4. Transacción Base de Datos
+            $transmision = DB::transaction(function () use ($validated, $config) {
                 $transmision = Ihcetransmisiones::create([
                     'cita_id'              => $validated['cita_id'],
-                    'configuracion_id'     => $validated['configuracion_id'],
+                    'configuracion_id'     => $config->id,
                     'typerda'              => $validated['typerda'],
                     'estado'               => 'PENDING',
                     'retry_count'          => 0,
@@ -111,13 +124,12 @@ class IhcegatewayController extends Controller
 
                 $serviceProperty = $this->bundleBuilders[$validated['typerda']];
                 $this->{$serviceProperty}->buildBundle($transmision);
-
                 
                 return $transmision;
             });
-            ProcessRdaTransmission::dispatch(
-                $transmision->id
-            )->afterCommit();
+
+            // 5. Despachar Queue Job
+            ProcessRdaTransmission::dispatch($transmision->id)->afterCommit();
 
             return response()->json([
                 'success'        => true,
@@ -126,15 +138,14 @@ class IhcegatewayController extends Controller
             ], 201);
 
         } catch (\Throwable $e) {
-
             Log::error('Error al encolar transmisión', [
-                'cita_id' => $validated['cita_id'],
+                'cita_id' => $validated['cita_id'] ?? $request->cita_id,
                 'error'   => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error al procesar el recurso FHIR.',
+                'message' => 'Error al procesar el recurso FHIR o registrar la transmisión.',
                 'error'   => config('app.debug') ? $e->getMessage() : null
             ], 500);
         }

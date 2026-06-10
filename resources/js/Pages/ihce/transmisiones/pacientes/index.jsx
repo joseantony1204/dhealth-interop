@@ -169,6 +169,75 @@ export default function Rdapaciente({ auth, transmisiones, filters, configuracio
         });
     };
 
+    // 🗳️ Validación del Envío Manual con SweetAlert2
+    const handleSubmitManualTxs = async (e) => {
+        e.preventDefault();
+        const isDark = document.documentElement.classList.contains('dark');
+
+        if (!formCitaId) {
+            Swal.fire({
+                title: 'Campos Incompletos',
+                text: 'Por favor complete todos los campos obligatorios.',
+                icon: 'info',
+                background: isDark ? '#111827' : '#ffffff',
+                color: isDark ? '#f3f4f6' : '#111827',
+                confirmButtonColor: '#4f46e5',
+            });
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            // Cambiamos router.post por axios.post para controlar las respuestas JSON
+            const response = await axios.post(route('api.gateway.encolar-transmision'), {
+                cita_id: formCitaId,
+                typerda: 'RDA_PATIENT',
+                mode: 'UAT'
+            });
+
+            // Si llega aquí, el estatus es 2xx (Éxito)
+            setIsOpenModal(false);
+            setFormCitaId('');
+            Toast.fire({
+                icon: 'success',
+                title: response.data.message || 'Transmisión en cola registrada.'
+            });
+
+        } catch (error) {
+            // Captura de errores (422, 409, 500, etc.)
+            let errorTitle = 'Error del Servidor';
+            let errorText = 'Ocurrió un error al procesar la solicitud.';
+
+            if (error.response) {
+                const status = error.response.status;
+                const data = error.response.data;
+
+                if (status === 422) {
+                    // Errores de validación de Laravel
+                    errorTitle = 'Error de Validacion';
+                    errorText = Object.values(data.errors).flat().join('\n');
+                } else if (status === 409 || status === 500) {
+                    // Tus respuestas personalizadas (Cita existente o fallo de FHIR)
+                    errorTitle = status === 409 ? 'Transmisión Duplicada' : 'Error Interno';
+                    errorText = data.message;
+                }
+            }
+
+            Swal.fire({
+                title: errorTitle,
+                text: errorText,
+                icon: 'error',
+                background: isDark ? '#111827' : '#ffffff',
+                color: isDark ? '#f3f4f6' : '#111827',
+                confirmButtonColor: '#e11d48',
+            });
+
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     // 📋 Copiado al Portapapeles usando los micro-toasts refinados
     const handleCopyToClipboard = (text, sectionName) => {
         if (!text) return;
@@ -685,7 +754,7 @@ export default function Rdapaciente({ auth, transmisiones, filters, configuracio
                             </button>
                         </div>
                         
-                        <form onSubmit={handleSubmitManualTx} className="p-5 space-y-4">
+                        <form onSubmit={handleSubmitManualTxs} className="p-5 space-y-4">
                             <div>
                                 <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1.5">Código Único de Cita (Core ID)</label>
                                 <input 
@@ -698,6 +767,7 @@ export default function Rdapaciente({ auth, transmisiones, filters, configuracio
                                 />
                             </div>
 
+                            {/*}
                             <div>
                                 <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1.5">Configuración de Canal (Entidad / IPS)</label>
                                 <select 
@@ -714,7 +784,7 @@ export default function Rdapaciente({ auth, transmisiones, filters, configuracio
                                     ))}
                                 </select>
                             </div>
-
+                            {*/}
                             <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                                 <button 
                                     type="button" 
